@@ -6,7 +6,6 @@ import Todos from '../components/Todos.vue'
 
 <template>
   <main>
-    <TheWelcome />
     <Todos />
   </main>
 </template>
