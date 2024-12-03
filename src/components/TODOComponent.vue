@@ -12,9 +12,14 @@ const props = defineProps({
     type: Array as PropType<Tache[]>,
     required: true,
   },
+  deleteTask: {
+    type: Function,
+    required: true,
+  },
 });
 
 const localTaches = ref([...props.taches]);
+
 watch(
   () => props.taches,
   (newT) => {
@@ -22,11 +27,7 @@ watch(
   },
   { deep: true }
 );
-const supprimerTache = (index: number) => {
-  localTaches.value.splice(index, 1);
-};
 </script>
-
 
 <template>
   <div class="table-container">
@@ -48,7 +49,10 @@ const supprimerTache = (index: number) => {
             <span class="etat">{{ item.etat }}</span>
           </td>
           <td class="date">{{ item.dateech }}</td>
-          <td class="deltebtn"><button class="delete-btn" @click="supprimerTache(index)">🗑️</button></td>
+          <td class="deltebtn">
+            <!-- Appel de deleteTask via la prop -->
+            <button class="delete-btn" @click="props.deleteTask(index)">🗑️</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -59,8 +63,6 @@ const supprimerTache = (index: number) => {
 .table-container {
   margin: 20px auto;
   max-width: 800px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.85);
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -122,9 +124,9 @@ td .date {
 }
 
 td .intitule {
-  max-width: 250px;
+  max-width: 65px;
   overflow: auto;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
   color: #e7f5e7;
   display: block;

@@ -6,8 +6,11 @@
     </header>
     <main>
       <div class="content-wrapper">
+        <div class="calendar-section">
+          <Calendrier :taches="taches" />
+        </div>
         <div class="task-list">
-          <TODOComponent :taches="taches" />
+          <TODOComponent :taches="taches" :deleteTask="deleteTask" />
         </div>
         <div class="task-form">
           <form @submit.prevent="addTask">
@@ -19,17 +22,29 @@
               <label for="dueDate">Date d'échéance</label>
               <input v-model="newTask.dateech" id="dueDate" type="date" required />
             </div>
+            <div class="form-group">
+              <label for="taskState">État</label>
+              <select v-model="newTask.etat" id="taskState" required>
+                <option value="A faire">À faire</option>
+                <option value="En cours">En cours</option>
+                <option value="Terminé">Terminé</option>
+              </select>
+            </div>
             <button type="submit">Ajouter</button>
           </form>
         </div>
       </div>
+      <footer>
+        <span v-if="tasktodo !== 0">Nombre de taches non terminées :{{ tasktodo }}</span>
+      </footer>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import TODOComponent from '@/components/TODOComponent.vue';
+import Calendrier from '@/components/Calendrier.vue';
 
 type Tache = {
   intitule: string;
@@ -38,6 +53,9 @@ type Tache = {
 };
 
 const taches = reactive<Tache[]>([]);
+const tasktodo = computed(() =>
+  taches.filter(task => task.etat === "En cours" || task.etat === "A faire").length
+);
 
 const newTask = ref({
   intitule: '',
@@ -57,6 +75,10 @@ const addTask = () => {
   } else {
     alert('Veuillez remplir tous les champs.');
   }
+};
+
+const deleteTask = (index: number) => {
+  taches.splice(index,1);
 };
 </script>
 
@@ -96,7 +118,7 @@ main {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   padding: 20px;
   width: 90%;
-  max-width: 1200px;
+  max-width: 1300px;
 }
 
 .content-wrapper {
@@ -104,6 +126,22 @@ main {
   flex-direction: row;
   justify-content: space-between;
   gap: 20px;
+}
+
+select {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  outline: none;
+  font-size: 14px;
+  transition: box-shadow 0.2s ease;
+}
+
+select:focus {
+  box-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
+  background: rgba(26, 26, 26, 0.8);
 }
 
 .task-list {
@@ -117,7 +155,8 @@ main {
 .task-form {
   flex: 1;
   background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
+  padding: 10px;
+  width: 200px;
   border-radius: 10px;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
 }
