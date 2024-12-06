@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, ref, watch } from 'vue';
+import { PropType, ref, computed, watch } from 'vue';
 
 type Tache = {
   intitule: string;
@@ -16,9 +16,19 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  deleteAllTasks: {
+    type: Function,
+    required: true,
+  },
+  deleteCompletedTasks: {
+    type: Function,
+    required: true,
+  },
 });
 
 const localTaches = ref([...props.taches]);
+const filter = ref<'Toutes' |'Non Terminées' | 'Terminées'>('Toutes');
+const editingIndex = ref<number | null>(null);
 
 watch(
   () => props.taches,
@@ -27,9 +37,56 @@ watch(
   },
   { deep: true }
 );
+
+const filteredTaches = computed(() => {
+  if (filter.value === 'Toutes') {
+    return localTaches.value;
+  }
+
+  return localTaches.value.filter((tache) => {
+    if (filter.value === 'Non Terminées') {
+      return tache.etat === 'A faire' || tache.etat === 'En cours';
+    } else if (filter.value === 'Terminées') {
+      return tache.etat === 'Terminé';
+    }
+    return tache.etat === 'A faire';
+  });
+});
+
+const startEditing = (index: number) => {
+  editingIndex.value = index;
+};
+const stopEditing = () => {
+  editingIndex.value = null;
+};
 </script>
 
+
 <template>
+  <div v-if="localTaches.length > 0" class="filters">
+    <div class="buttons-container">
+      <div class="filter-buttons">
+        <button :class="{ active: filter === 'Toutes' }" @click="filter = 'Toutes'">
+          Toutes les tâches
+        </button>
+        <button :class="{ active: filter === 'Non Terminées' }" @click="filter = 'Non Terminées'">
+          À faire
+        </button>
+        <button :class="{ active: filter === 'Terminées' }" @click="filter = 'Terminées'">
+          Fait
+        </button>
+      </div>
+      <div class="action-buttons">
+        <button class="delete-all-btn" @click="props.deleteAllTasks()">
+          Supprimer toutes les tâches
+        </button>
+        <button class="delete-completed-btn" @click="props.deleteCompletedTasks()">
+          Supprimer les tâches terminées
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="table-container">
     <table>
       <thead>
@@ -41,16 +98,18 @@ watch(
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in localTaches" :key="index">
+        <tr v-for="(item, index) in filteredTaches" :key="index">
           <td>
-            <span class="intitule">{{ item.intitule }}</span>
+            <span v-if="editingIndex !== index" class="intitule" @dblclick="startEditing(index)">
+              {{ item.intitule }}
+            </span>
+            <input v-else v-model="item.intitule" @blur="stopEditing" class="edit-input" />
           </td>
           <td>
             <span class="etat">{{ item.etat }}</span>
           </td>
           <td class="date">{{ item.dateech }}</td>
           <td class="deltebtn">
-            <!-- Appel de deleteTask via la prop -->
             <button class="delete-btn" @click="props.deleteTask(index)">🗑️</button>
           </td>
         </tr>
@@ -58,6 +117,8 @@ watch(
     </table>
   </div>
 </template>
+
+
 
 <style scoped>
 .table-container {
@@ -121,30 +182,34 @@ td .date {
   font-size: 14px;
   font-style: italic;
   color: #a9f5a9;
+  max-width: 200px;
 }
 
 td .intitule {
-  max-width: 65px;
+  width: 200px;
   overflow: auto;
-  text-overflow: clip;
+  scrollbar-width: 190px;
   white-space: nowrap;
   color: #e7f5e7;
   display: block;
 }
 
 td .intitule::-webkit-scrollbar {
-  height: 8px;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-td .intitule::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #00ff9d, #006a3d);
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 
-td .intitule::-webkit-scrollbar-thumb:hover {
-  background: #00e085;
+td .intitule::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00ff9d, #009e5c);
+  border-radius: 5px;
+  transition: background 0.3s ease;
 }
+
+td .intitule::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #00ffb5, #00a96b);
+}
+
 
 td .delete-btn {
   padding: 5px 10px;
@@ -174,5 +239,56 @@ td .delete-btn:hover {
   z-index: -1;
   filter: blur(20px);
   opacity: 0.15;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: linear-gradient(45deg, #1e4d3417, #00381f0f);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.action-buttons {
+  margin-left: 10px;
+}
+
+.filter-buttons,
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #00855a, #004c34);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+
+button.active {
+  background: linear-gradient(45deg, #00c77d, #008b4d);
+  color: #ffffff;
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+.delete-all-btn,
+.delete-completed-btn {
+  background: linear-gradient(45deg, #ff4d4d, #b20000);
+}
+
+.delete-all-btn:hover,
+.delete-completed-btn:hover {
+  background: linear-gradient(45deg, #ff6666, #cc0000);
 }
 </style>

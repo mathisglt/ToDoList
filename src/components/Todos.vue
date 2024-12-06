@@ -1,4 +1,3 @@
-<!-- Todos -->
 <template>
   <div class="app-container">
     <header>
@@ -6,11 +5,10 @@
     </header>
     <main>
       <div class="content-wrapper">
-        <div class="calendar-section">
-          <Calendrier :taches="taches" />
-        </div>
+
         <div class="task-list">
-          <TODOComponent :taches="taches" :deleteTask="deleteTask" />
+          <TODOComponent :taches="taches" :deleteTask="deleteTask" :deleteAllTasks="deleteAllTasks"
+            :deleteCompletedTasks=" deleteCompletedTasks" />
         </div>
         <div class="task-form">
           <form @submit.prevent="addTask">
@@ -32,6 +30,9 @@
             </div>
             <button type="submit">Ajouter</button>
           </form>
+          <div class="calendar-section">
+            <Calendrier :taches="taches" />
+          </div>
         </div>
       </div>
       <footer>
@@ -80,6 +81,17 @@ const addTask = () => {
 const deleteTask = (index: number) => {
   taches.splice(index,1);
 };
+const deleteAllTasks = () => {
+  taches.splice(0, taches.length);
+};
+
+const deleteCompletedTasks = () => {
+  const restantes = taches.filter(
+    (tache) => tache.etat === 'A faire' || tache.etat === 'En cours'
+  );
+  taches.splice(0, taches.length, ...restantes);
+};
+
 </script>
 
 <style scoped>
@@ -126,6 +138,7 @@ main {
   flex-direction: row;
   justify-content: space-between;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 select {
@@ -156,7 +169,6 @@ select:focus {
   flex: 1;
   background: rgba(255, 255, 255, 0.05);
   padding: 10px;
-  width: 200px;
   border-radius: 10px;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
 }
