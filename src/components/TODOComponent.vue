@@ -215,7 +215,7 @@ td .delete-btn {
   padding: 5px 10px;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(45deg, #ff4d4d, #b20000);
+  background: linear-gradient(45deg, #ff4d4d9f, #ff4d4dd6);
   color: #ffffff;
   font-size: 14px;
   cursor: pointer;
@@ -223,8 +223,8 @@ td .delete-btn {
 }
 
 td .delete-btn:hover {
-  background: linear-gradient(45deg, #ff6666, #cc0000);
-  transform: scale(1.1);
+  background: linear-gradient(45deg, #ff4d4dd7, #ff4d4de7);
+
 }
 
 .table-container::before {
@@ -263,32 +263,52 @@ td .delete-btn:hover {
 }
 
 button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(45deg, #00855a, #004c34);
-  color: #ffffff;
-  font-size: 16px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
   font-weight: bold;
+  border: 1px solid #00855a;
+  border-radius: 10px;
+  color: white;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 
 button.active {
-  background: linear-gradient(45deg, #00c77d, #008b4d);
+  background: linear-gradient(145deg, #00855a, #004c34);
+  border-color: #00b368;
+}
+input[type="date"] {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
-  font-weight: bold;
-  transform: scale(1.05);
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+  max-width: 200px; /* Limite la largeur */
+  display: block;
+  margin: 0 auto; /* Centrage horizontal */
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+input[type="date"]:focus {
+  box-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
+  background: rgba(26, 26, 26, 0.8);
 }
 
 .delete-all-btn,
 .delete-completed-btn {
-  background: linear-gradient(45deg, #ff4d4d, #b20000);
+  background: #b72525;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.delete-all-btn:hover,
-.delete-completed-btn:hover {
-  background: linear-gradient(45deg, #ff6666, #cc0000);
-}
+
 </style>

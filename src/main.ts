@@ -10,10 +10,10 @@ app.use(router)
 
 app.mount('#app')
 
-const defaultBackgroundColor = 'lightBlue'
+const defaultBackgroundColor = 'lightgreen'
 
 app.directive('background', (el, binding) => {
-    console.log(binding.arg)    
+    console.log(binding.arg)
       el.style.backgroundColor = binding.arg || defaultBackgroundColor
       el.innerHTML =  'My background text is :  ' + binding.arg || defaultBackgroundColor
     });

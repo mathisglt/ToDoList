@@ -1,14 +1,11 @@
-<!-- eslint-disable vue/no-export-in-script-setup -->
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="app-container">
-
     <main>
       <header>
         <h1>Gestionnaire de Tâches</h1>
       </header>
       <div class="content-wrapper">
-
         <div class="task-list">
           <TODOComponent :taches="taches" :deleteTask="deleteTask" :deleteAllTasks="deleteAllTasks"
             :deleteCompletedTasks="deleteCompletedTasks" />
@@ -16,17 +13,15 @@
         <div class="task-form">
           <form @submit.prevent="addTask">
             <div class="form-group">
-              <label for="taskName">Nom de la tâche</label>
+              <label class="form-label" for="taskName">Nom de la tâche</label>
               <input v-model="newTask.intitule" id="taskName" type="text" placeholder="Entrer une tâche" required />
             </div>
             <div class="form-group">
-              <label for="dueDate">Date d'échéance</label>
+              <label class="form-label" for="dueDate">Date d'échéance</label>
               <vue-flatpickr v-model="newTask.dateech" :config="flatpickrConfig" placeholder="Sélectionner une date" />
             </div>
-
-
             <div class="form-group">
-              <label>État</label>
+              <label class="form-label">État</label>
               <div class="button-group">
                 <button type="button" class="state-button" :class="{ active: newTask.etat === 'A faire' }"
                   @click="newTask.etat = 'A faire'">
@@ -43,9 +38,7 @@
               </div>
             </div>
 
-
-
-            <button type="submit">Ajouter</button>
+            <button class="add-button" type="submit">Ajouter</button>
           </form>
           <div class="calendar-section">
             <Calendrier :taches="taches" />
@@ -53,7 +46,7 @@
         </div>
       </div>
       <footer>
-        <span v-if="tasktodo !== 0">Nombre de taches non terminées :{{ tasktodo }}</span>
+        <span v-if="tasktodo !== 0">Nombre de tâches non terminées : {{ tasktodo }}</span>
       </footer>
     </main>
   </div>
@@ -61,9 +54,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
+import VueFlatpickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
 import TODOComponent from '@/components/TODOComponent.vue';
 import Calendrier from '@/components/Calendrier.vue';
-
 
 type Tache = {
   intitule: string;
@@ -72,6 +66,7 @@ type Tache = {
 };
 
 const taches = reactive<Tache[]>([]);
+
 const tasktodo = computed(() =>
   taches.filter(task => task.etat === "En cours" || task.etat === "A faire").length
 );
@@ -81,6 +76,13 @@ const newTask = ref({
   etat: 'A faire',
   dateech: '',
 });
+
+const flatpickrConfig = {
+  dateFormat: 'Y-m-d',
+  allowInput: true,
+  static: true,
+  minDate: 'today',
+};
 
 const addTask = () => {
   if (newTask.value.intitule && newTask.value.dateech) {
@@ -114,31 +116,23 @@ const deleteCompletedTasks = () => {
 <style scoped>
 html,
 body {
-  margin: 100px;
-  padding: 1000px;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  scrollbar-width: none;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari */
+  font-family: 'Poppins', sans-serif;
+  background: #00463d;
+  color: #e7f5e7;
 }
 
 .app-container {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(45deg, #00855a, #006243);
-  color: #e7f5e7;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: linear-gradient(45deg, #00855a, #006243);
   justify-content: center;
   height: 100vh;
   width: 100vw;
   box-sizing: border-box;
-  overflow: scroll;
-  scrollbar-width: none;
 }
 
 header h1 {
@@ -147,7 +141,6 @@ header h1 {
   color: #c3ffc3;
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 }
-
 
 main {
   background: rgba(26, 26, 26, 0.95);
@@ -167,19 +160,18 @@ main {
 }
 
 select {
-  padding: 10px;
-  border: none;
+  padding: 12px;
+  border: 1px solid #00855a;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   outline: none;
   font-size: 14px;
-  transition: box-shadow 0.2s ease;
 }
 
 select:focus {
-  box-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
   background: rgba(26, 26, 26, 0.8);
+  border-color: #00b368;
 }
 
 .task-list {
@@ -211,20 +203,23 @@ label {
 }
 
 input[type="text"],
-input[type="date"] {
-  padding: 10px;
-  border: none;
+vue-flatpickr {
+  padding: 12px;
+  border: 1px solid #00855a;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   outline: none;
   font-size: 14px;
-  transition: box-shadow 0.2s ease;
+  width: 80%;
+  display: block;
+  margin: 0 auto;
 }
 
 input[type="text"]:focus,
-input[type="date"]:focus {
-  box-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
+vue-flatpickr:focus {
+  background: rgba(26, 26, 26, 0.8);
+  border-color: #00b368;
 }
 
 .button-group {
@@ -233,41 +228,47 @@ input[type="date"]:focus {
   justify-content: center;
   margin-top: 10px;
 }
+.form-label {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
 
-.state-button {
-  padding: 20px 20px;
+}
+
+.state-button,button {
+  padding: 10px 20px;
   font-size: 1.2rem;
   font-weight: bold;
-  border: none;
+  border: 1px solid #00855a;
   border-radius: 10px;
-  color: #333;
+  color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .state-button.active {
   background: linear-gradient(145deg, #00855a, #004c34);
-  color: #ffffff;
-  box-shadow: inset 4px 4px 8px #003322, inset -4px -4px 8px #00a374;
+  border-color: #00b368;
 }
 
-
-
-
-button {
+.add-button {
   padding: 10px 15px;
-  border: none;
+  border: 1px solid #00b368;
   border-radius: 8px;
   background: linear-gradient(45deg, #00b368, #007d48);
   color: #ffffff;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease;
+  transition: background 0.3s ease;
+  width: 80%;
+  display: block;
+  margin: 0 auto;
 }
 
-button:hover {
+.add-button:focus {
+  outline: none;
   background: linear-gradient(45deg, #00e676, #009a59);
-  transform: scale(1.05);
 }
 </style>
