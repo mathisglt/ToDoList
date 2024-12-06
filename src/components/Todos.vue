@@ -1,15 +1,17 @@
+<!-- eslint-disable vue/no-export-in-script-setup -->
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="app-container">
-    <header>
-      <h1>Gestionnaire de Tâches</h1>
-    </header>
+
     <main>
+      <header>
+        <h1>Gestionnaire de Tâches</h1>
+      </header>
       <div class="content-wrapper">
 
         <div class="task-list">
           <TODOComponent :taches="taches" :deleteTask="deleteTask" :deleteAllTasks="deleteAllTasks"
-            :deleteCompletedTasks=" deleteCompletedTasks" />
+            :deleteCompletedTasks="deleteCompletedTasks" />
         </div>
         <div class="task-form">
           <form @submit.prevent="addTask">
@@ -19,16 +21,30 @@
             </div>
             <div class="form-group">
               <label for="dueDate">Date d'échéance</label>
-              <input v-model="newTask.dateech" id="dueDate" type="date" required />
+              <vue-flatpickr v-model="newTask.dateech" :config="flatpickrConfig" placeholder="Sélectionner une date" />
             </div>
+
+
             <div class="form-group">
-              <label for="taskState">État</label>
-              <select v-model="newTask.etat" id="taskState" required>
-                <option value="A faire">À faire</option>
-                <option value="En cours">En cours</option>
-                <option value="Terminé">Terminé</option>
-              </select>
+              <label>État</label>
+              <div class="button-group">
+                <button type="button" class="state-button" :class="{ active: newTask.etat === 'A faire' }"
+                  @click="newTask.etat = 'A faire'">
+                  À faire
+                </button>
+                <button type="button" class="state-button" :class="{ active: newTask.etat === 'En cours' }"
+                  @click="newTask.etat = 'En cours'">
+                  En cours
+                </button>
+                <button type="button" class="state-button" :class="{ active: newTask.etat === 'Terminé' }"
+                  @click="newTask.etat = 'Terminé'">
+                  Terminé
+                </button>
+              </div>
             </div>
+
+
+
             <button type="submit">Ajouter</button>
           </form>
           <div class="calendar-section">
@@ -47,6 +63,7 @@
 import { ref, reactive, computed } from 'vue';
 import TODOComponent from '@/components/TODOComponent.vue';
 import Calendrier from '@/components/Calendrier.vue';
+
 
 type Tache = {
   intitule: string;
@@ -80,7 +97,7 @@ const addTask = () => {
 };
 
 const deleteTask = (index: number) => {
-  taches.splice(index,1);
+  taches.splice(index, 1);
 };
 const deleteAllTasks = () => {
   taches.splice(0, taches.length);
@@ -92,7 +109,6 @@ const deleteCompletedTasks = () => {
   );
   taches.splice(0, taches.length, ...restantes);
 };
-
 </script>
 
 <style scoped>
@@ -112,7 +128,7 @@ body::-webkit-scrollbar {
 
 .app-container {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(45deg, #00855a, #004c34);
+  background: linear-gradient(45deg, #00855a, #006243);
   color: #e7f5e7;
   display: flex;
   flex-direction: column;
@@ -210,6 +226,33 @@ input[type="text"]:focus,
 input[type="date"]:focus {
   box-shadow: 0 0 5px rgba(0, 255, 157, 0.8);
 }
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.state-button {
+  padding: 20px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.state-button.active {
+  background: linear-gradient(145deg, #00855a, #004c34);
+  color: #ffffff;
+  box-shadow: inset 4px 4px 8px #003322, inset -4px -4px 8px #00a374;
+}
+
+
+
 
 button {
   padding: 10px 15px;

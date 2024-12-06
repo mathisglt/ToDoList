@@ -137,7 +137,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(45deg, #00855a, #004c34);
+  background: linear-gradient(45deg, #00855a, #006243);
   color: #ffffff;
 }
 
