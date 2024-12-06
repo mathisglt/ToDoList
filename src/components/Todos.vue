@@ -98,10 +98,16 @@ const deleteCompletedTasks = () => {
 <style scoped>
 html,
 body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  margin: 100px;
+  padding: 1000px;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari */
 }
 
 .app-container {
@@ -112,10 +118,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   width: 100vw;
-  padding: 20px;
   box-sizing: border-box;
+  overflow: scroll;
+  scrollbar-width: none;
 }
 
 header h1 {
@@ -125,13 +132,14 @@ header h1 {
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 }
 
+
 main {
   background: rgba(26, 26, 26, 0.95);
   border-radius: 15px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   padding: 20px;
-  width: 90%;
-  max-width: 1300px;
+  width: 100%;
+  max-width: 80vw;
 }
 
 .content-wrapper {
