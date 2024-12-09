@@ -52,8 +52,13 @@ const filteredTaches = computed(() => {
     return tache.etat === 'A faire';
   });
 });
-
-const startEditing = (index: number) => {
+const changeState = (index: number) => {
+  const etats = ['A faire', 'En cours', 'Terminé'];
+  const currentEtat = localTaches.value[index].etat;
+  const nextEtatIndex = (etats.indexOf(currentEtat) + 1) % etats.length;
+  localTaches.value[index].etat = etats[nextEtatIndex];
+}
+const startEditingIntitule = (index: number) => {
   editingIndex.value = index;
 };
 const stopEditing = () => {
@@ -100,13 +105,13 @@ const stopEditing = () => {
       <tbody>
         <tr v-for="(item, index) in filteredTaches" :key="index">
           <td>
-            <span v-if="editingIndex !== index" class="intitule" @dblclick="startEditing(index)">
+            <span v-if="editingIndex !== index" class="intitule" @dblclick="startEditingIntitule(index)">
               {{ item.intitule }}
             </span>
             <input v-else v-model="item.intitule" @blur="stopEditing" class="edit-input" />
           </td>
           <td>
-            <span class="etat">{{ item.etat }}</span>
+            <span class="etat" @click="changeState(index)">{{ item.etat }}</span>
           </td>
           <td class="date">{{ item.dateech }}</td>
           <td class="deltebtn">
@@ -176,6 +181,16 @@ td .etat {
   text-transform: uppercase;
   font-weight: bold;
   text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+td .etat:hover {
+  transform: scale(1.1);
+  background: rgba(60, 60, 60, 0.9);
+  box-shadow: 0px 2px 6px rgba(0, 128, 0, 0.3);
+  color: #a4f7a4;
+  cursor: pointer;
+
 }
 
 td .date {
@@ -260,11 +275,12 @@ td .delete-btn:hover {
 .action-buttons {
   display: flex;
   gap: 10px;
+  height: 50px;
 }
 
 button {
   padding: 10px 20px;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   font-weight: bold;
   border: 1px solid #00855a;
   border-radius: 10px;
@@ -279,6 +295,7 @@ button.active {
   background: linear-gradient(145deg, #00855a, #004c34);
   border-color: #00b368;
 }
+
 input[type="date"] {
   padding: 10px;
   border: none;
@@ -288,9 +305,11 @@ input[type="date"] {
   outline: none;
   font-size: 14px;
   width: 100%;
-  max-width: 200px; /* Limite la largeur */
+  max-width: 200px;
+  /* Limite la largeur */
   display: block;
-  margin: 0 auto; /* Centrage horizontal */
+  margin: 0 auto;
+  /* Centrage horizontal */
   transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
@@ -309,6 +328,4 @@ input[type="date"]:focus {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
-
 </style>
