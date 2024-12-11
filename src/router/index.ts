@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Todos from '@/components/Todos.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL || '/'),
   routes: [
     {
       path: '/',
