@@ -2,6 +2,8 @@
   <template>
     <div class="app-container">
       <main>
+        <div v-if="loading" class="loading">Chargement...</div>
+        <div v-if="error" class="error">{{ error }}</div>
         <header>
           <h1>Gestionnaire de Tâches</h1>
         </header>
@@ -54,11 +56,12 @@
   </template>
 
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, onMounted } from 'vue';
   import VueFlatpickr from 'vue-flatpickr-component';
   import 'flatpickr/dist/flatpickr.css';
   import TODOComponent from '@/components/TODOComponent.vue';
   import Calendrier from '@/components/Calendrier.vue';
+  import { todoService } from '@/services/api';
 
   type Tache = {
     intitule: string;
@@ -67,12 +70,30 @@
   };
 
   const taches = reactive<Tache[]>([]);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+
+  onMounted(async () => {
+    loading.value = true;
+    try {
+      const todos = await todoService.getTodos();
+      taches.splice(0, taches.length, ...todos);
+    } catch (err: Error | unknown) {
+      error.value = `Erreur lors du chargement des tâches: ${err}`;
+    } finally {
+      loading.value = false;
+    }
+  });
 
   const tasktodo = computed(() =>
     taches.filter(task => task.etat === "En cours" || task.etat === "A faire").length
   );
 
-  const newTask = ref({
+  const newTask = ref<{
+    intitule: string;
+    etat: "A faire" | "En cours" | "Terminé";
+    dateech: string;
+  }>({
     intitule: '',
     etat: 'A faire',
     dateech: '',
@@ -85,22 +106,43 @@
     minDate: 'today',
   };
 
-  const addTask = () => {
+  const addTask = async () => {
     if (newTask.value.intitule && newTask.value.dateech) {
-      taches.push({
-        intitule: newTask.value.intitule,
-        etat: newTask.value.etat,
-        dateech: newTask.value.dateech,
-      });
-      newTask.value.intitule = '';
-      newTask.value.dateech = '';
+      loading.value = true;
+      try {
+        const createdTodo = await todoService.createTodo({
+          intitule: newTask.value.intitule,
+          etat: newTask.value.etat,
+          dateech: newTask.value.dateech,
+        });
+
+        if (createdTodo) {
+          taches.push(createdTodo);
+          newTask.value.intitule = '';
+          newTask.value.dateech = '';
+        }
+      } catch (err: Error | unknown) {
+        error.value = `Erreur lors de l'ajout de la tâche: ${err}`;
+      } finally {
+        loading.value = false;
+      }
     } else {
       alert('Veuillez remplir tous les champs.');
     }
   };
 
-  const deleteTask = (index: number) => {
-    taches.splice(index, 1);
+  const deleteTask = async (index: number) => {
+    loading.value = true;
+    try {
+      const success = await todoService.deleteTodo(index + 1);
+      if (success) {
+        taches.splice(index, 1);
+      }
+    } catch (err: Error | unknown) {
+      error.value = `Erreur lors de la suppression de la tâche: ${err}`;
+    } finally {
+      loading.value = false;
+    }
   };
   const deleteAllTasks = () => {
     taches.splice(0, taches.length);
@@ -275,5 +317,20 @@ button {
 .add-button:focus {
   outline: none;
   background: linear-gradient(45deg, #00e676, #009a59);
+}
+
+.loading {
+  text-align: center;
+  padding: 1rem;
+  color: #00855a;
+}
+
+.error {
+  text-align: center;
+  padding: 1rem;
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.1);
+  border-radius: 5px;
+  margin: 1rem 0;
 }
 </style>
