@@ -6,6 +6,7 @@ Projet réalisé pour l'UE WE du Master IL de l'ISTIC.
 
 Elle vous permet de gérer vos tâches en ajoutant, modifiant et supprimant des tâches, tout en suivant des informations comme l'état et la date d'échéance.
 
+Existe aussi en version déployée : https://todolist.amadev.fr/
 ## 🚀 Fonctionnalités
 
 - **Ajouter une tâche** : Vous pouvez ajouter une tâche avec son nom, son état et sa date d'échéance.
