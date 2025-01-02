@@ -1,61 +1,42 @@
-# WE-Vue
+# 📝 ToDoList
 
-This template should help get you started developing with Vue 3 in Vite.
+**ToDoList** est une application de gestion de tâches construite avec Vue.js.
 
-## Recommended IDE Setup
+Projet réalisé pour l'UE WE du Master IL de l'ISTIC.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Elle vous permet de gérer vos tâches en ajoutant, modifiant et supprimant des tâches, tout en suivant des informations comme l'état et la date d'échéance.
 
-## Type Support for `.vue` Imports in TS
+## 🚀 Fonctionnalités
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **Ajouter une tâche** : Vous pouvez ajouter une tâche avec son nom, son état et sa date d'échéance.
+- **Supprimer une tâche** : Vous pouvez supprimer une tâche de votre liste.
+- **Gestion des états** : Modifiez l'état de chaque tâche (À faire, En cours, Terminé).
+- **Calendrier intégré** : Visualisez vos tâches dans un calendrier.
+- **Page "À propos"** : Découvrez des informations sur l'auteur du projet.
+- 
+## 🛠️ Technologies utilisées
 
-## Customize configuration
+- **Frontend** : Vue.js (avec API et TypeScript)
+- **Routing** : Vue Router
+- **CSS** : Styles personnalisés dans Todos.vue, Calendrier.vue, et TODOComponent.vue
+- 
+## 📂 Structure du projetGestionnaire-de-Taches/
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
+```plaintext
+├── src/
+│   ├── components/
+│   │   ├── Calendrier.vue      # Composant de calendrier
+│   │   ├── TODOComponent.vue    # Composant de gestion des tâches
+│   │   ├── Todos.vue            # Composant principal de gestion des tâches
+│   ├── views/
+│   │   ├── AboutView.vue        # Vue "À propos"
+│   │   ├── HomeView.vue         # Vue principale
+│   ├── services/
+│   │   ├── api.ts               # Service API pour la gestion des tâches
+│   ├── App.vue                  # Point d'entrée de l'application
+│   ├── main.ts                  # Fichier principal de démarrage
+├── public/                      # Dossier public
+│   ├── index.html               # Fichier HTML principal
+├── package.json                 # Dépendances et scripts
+└── README.md                    # Documentation
 ```
