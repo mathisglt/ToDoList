@@ -54,7 +54,7 @@ Suivez les étapes ci-dessous pour cloner ce projet et le faire fonctionner sur 
    2. Rendez vous dans le dossier
    
    ```bash
-   cd .\Ma-Bibliotheque\
+   cd .\ToDoList\
    ```
    
    3. Installez les dépendances
@@ -66,5 +66,5 @@ Suivez les étapes ci-dessous pour cloner ce projet et le faire fonctionner sur 
    4. Enfin, démarrer le projet
    
    ```bash
-   npm run start
+   npm run dev
    ```
